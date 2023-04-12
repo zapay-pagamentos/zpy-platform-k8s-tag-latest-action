@@ -16,9 +16,6 @@ inputs:
   image-tag:  # id of input
     description: 'Image TAG'
     required: true
-  git-commit:  # id of input
-    description: 'SHA commit'
-    required: true
 outputs:
   registry:
     description: "ECR Registry"
@@ -73,12 +70,12 @@ runs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ inputs.ecr-repository }}
         IMAGE_TAG: ${{ inputs.image-tag }}
-        SHA_COMMIT: ${{ github.head_ref }}
+        GIT_BRANCH_REF: ${{ github.head_ref }}
       shell: bash
       run: |
-        MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$SHA_COMMIT --query 'images[].imageManifest' --output text)
+        MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$GIT_BRANCH_REF --query 'images[].imageManifest' --output text)
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag latest --image-manifest "$MANIFEST"
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag $IMAGE_TAG --image-manifest "$MANIFEST"
-        aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$SHA_COMMIT
+        aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$GIT_BRANCH_REF
         echo "::set-output name=image-repo::$ECR_REGISTRY/$ECR_REPOSITORY"
         echo "::set-output name=image-tag::$IMAGE_TAG"
