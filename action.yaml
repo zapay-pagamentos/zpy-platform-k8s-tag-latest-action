@@ -73,7 +73,7 @@ runs:
         GIT_BRANCH_REF: ${{ github.head_ref }}
       shell: bash
       run: |
-        MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$GIT_BRANCH_REF --query 'images[].imageManifest' --output text)
+        MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$GIT_BRANCH_REF --query 'images[].imageManifest' --output text)
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag latest --image-manifest "$MANIFEST"
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag $IMAGE_TAG --image-manifest "$MANIFEST"
         aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG-staging-$GIT_BRANCH_REF
