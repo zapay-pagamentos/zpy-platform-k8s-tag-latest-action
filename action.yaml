@@ -76,6 +76,5 @@ runs:
         MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$GIT_BRANCH_REF --query 'images[].imageManifest' --output text)
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag latest --image-manifest "$MANIFEST"
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag $IMAGE_TAG --image-manifest "$MANIFEST"
-        aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$GIT_BRANCH_REF
         echo "::set-output name=image-repo::$ECR_REGISTRY/$ECR_REPOSITORY"
         echo "::set-output name=image-tag::$IMAGE_TAG"
