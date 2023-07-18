@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zpy-platform-k8s-tag-latest-action
+  description: Github Action to tag image with latest
+  annotations:
+    github.com/project-slug: zapay-pagamentos/zpy-platform-k8s-tag-latest-action
+spec:
+  type: library
+  lifecycle: production
+  owner: darrell
