@@ -37,8 +37,9 @@ runs:
         GIT_BRANCH_REF: ${{ github.head_ref }}
       shell: bash
       run: |
+        echo "Set $IMAGE_TAG/$ECR_REPOSITORY:$IMAGE_TAG to latest"
         staging_image_tag=$(echo $GIT_BRANCH_REF | sed 's/\//_/g')
         MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$staging_image_tag --query 'images[].imageManifest' --output text)
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag latest --image-manifest "$MANIFEST"
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag $IMAGE_TAG --image-manifest "$MANIFEST"
-        echo "::set-output name=image-tag::$IMAGE_TAG"
+        echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
