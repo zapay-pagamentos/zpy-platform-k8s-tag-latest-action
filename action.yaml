@@ -19,8 +19,8 @@ runs:
   using: "composite"
   steps:
     ## Clone do código
-    - name: Check out code
-      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     ## Fazendo login no AWS ECR
     - name: Login to Amazon ECR
