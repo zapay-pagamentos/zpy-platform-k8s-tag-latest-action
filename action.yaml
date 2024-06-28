@@ -4,6 +4,9 @@ inputs:
   ecr-repository:  # id of input
     description: 'ECR repository'
     required: true
+  ecr-registry:  # id of input
+    description: 'ECR registry'
+    required: true
   image-tag:  # id of input
     description: 'Image TAG'
     required: true
@@ -28,7 +31,7 @@ runs:
     - name: Tag image with latest Amazon ECR
       id: tag_image
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REGISTRY: ${{ inputs.ecr-registry }}
         ECR_REPOSITORY: ${{ inputs.ecr-repository }}
         IMAGE_TAG: ${{ inputs.image-tag }}
         GIT_BRANCH_REF: ${{ github.head_ref }}
@@ -38,5 +41,4 @@ runs:
         MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$staging_image_tag --query 'images[].imageManifest' --output text)
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag latest --image-manifest "$MANIFEST"
         aws ecr put-image --repository-name $ECR_REPOSITORY --image-tag $IMAGE_TAG --image-manifest "$MANIFEST"
-        echo "::set-output name=image-repo::$ECR_REGISTRY/$ECR_REPOSITORY"
         echo "::set-output name=image-tag::$IMAGE_TAG"
